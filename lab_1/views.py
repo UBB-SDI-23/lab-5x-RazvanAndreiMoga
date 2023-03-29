@@ -106,6 +106,18 @@ class StudentAgeGreaterThan(generics.ListAPIView):
         queryset = Student.objects.filter(age__gt=age)
         return queryset
 
+class TeacherStudents(generics.ListCreateAPIView):
+    serializer_class = StudentTeacherSerializerList2
+
+    def get_queryset(self):
+        teacher_id = int(self.kwargs['teacher_id'])
+        return Teacher.objects.filter(id=teacher_id)
+    #queryset = Teacher.objects.all()
+
+    def perform_create(self, serializer):
+        teacher = self.get_queryset().first()
+        serializer.save(tutor=teacher)
+
 # queryset = Course.objects.annotate(student_count=models.Count('coursestudent')).order_by(
 #     '-student_count')
 # serializer_class = CourseReportSerializer

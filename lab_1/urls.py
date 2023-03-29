@@ -16,6 +16,7 @@ urlpatterns = [
     path('course/<int:pk>/', CourseDetail.as_view()),
     path('course-student/<int:pk>/', CourseStudentDetail.as_view()),
     path('student/age-gt/<int:age>/', StudentAgeGreaterThan.as_view(), name='student-age-gt'),
+    path('teacher/<int:teacher_id>/students/', TeacherStudents.as_view()),
     path('student/', StudentList.as_view()),
     path('teacher/', TeacherList.as_view()),
     path('course/', CourseList.as_view()),

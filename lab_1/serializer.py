@@ -65,6 +65,16 @@ class StudentTeacherSerializerList(ModelSerializer):
             raise serializers.ValidationError("Email address must be valid")
         return email
 
+class StudentTeacherSerializerList2(ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['id', 'name', 'email', 'address', 'phone', 'age']
+
+    def validate_email(self, email):
+        if '@' not in email.lower():
+            raise serializers.ValidationError("Email address must be valid")
+        return email
+
 
 class CourseSerializer(ModelSerializer):
     # teacher_id = IntegerField(write_only=True)
@@ -168,3 +178,4 @@ class CourseAttendeesSerializer(serializers.ModelSerializer):
 
     def get_num_attendees(self, obj):
         return obj.student_set.count()
+
