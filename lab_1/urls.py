@@ -4,11 +4,6 @@ from django.urls import path, include
 from rest_framework import routers
 
 router = DefaultRouter()
-# router.register('student', StudentViewSet)
-# router.register('teacher', TeacherViewSet)
-# router.register('course', CourseViewSet)
-# router.register('course-student', CourseStudentViewSet)
-# router.register('passing-students', PassingStudentsCourse)
 
 urlpatterns = [
     path('teacher/<int:pk>/', TeacherDetail.as_view()),
@@ -25,7 +20,7 @@ urlpatterns = [
     path('teachers-older-than/', TeachersOlderThan.as_view()),
     path('passing-students/', PassingStudentsCourse.as_view()),
     path('tutors-by-avg-student-age/', TutorsByAvgStudentAge.as_view(), name='tutors-by-avg-student-age'),
-    #path('course-student-report/', CourseReport.as_view()),
+    # path('course-student-report/', CourseReport.as_view()),
     path('course-attendees/', CourseAttendees.as_view()),
     path('', include(router.urls)),
 

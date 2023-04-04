@@ -1,19 +1,14 @@
 from django.shortcuts import render
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, generics
 from .models import *
 from .serializer import *
-from rest_framework import (viewsets, filters, )
+from rest_framework import (viewsets, filters, status, )
 
 
 # Create your views here.
 
-# class StudentViewSet (ModelViewSet):
-#     serializer_class = StudentSerializer
-#     queryset = Student.objects.all()
-#
-# class TeacherViewSet(ModelViewSet):
-#     serializer_class = TeacherSerializer
-#     queryset = Teacher.objects.all()
 
 class StudentList(generics.ListCreateAPIView):
     queryset = Student.objects.all()
@@ -45,8 +40,6 @@ class CourseDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Course.objects.all()
 
 
-
-
 class CourseStudentList(generics.ListCreateAPIView):
     serializer_class = CourseStudentSerializer
     queryset = CourseStudent.objects.all()
@@ -56,22 +49,6 @@ class CourseStudentDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CourseStudentSerializer
     queryset = CourseStudent.objects.all()
 
-
-# class CouresList(generics.ListCreateAPIView):
-#     queryset = Course.objects.all()
-#     serializer_class = CourseSerializerList
-
-# class StudentCourseEnrollment(generics.CreateAPIView):
-#     serializer_class = CourseStudentSerializer
-#
-# class CourseStudentViewSet (ModelViewSet):
-#     serializer_class = CourseStudentSerializer
-#     queryset = CourseStudent.objects.all()
-#
-# class PassingStudentsCourse (generics.ListCreateAPIView):
-#     serializer_class = CourseStudentSerializer
-#     #queryset = Student.objects.filter(coursestudent__grade__gte=5)
-#     queryset = CourseStudent.objects.filter(grade__gte=5)
 
 class TeachersOlderThan(generics.ListAPIView):
     serializer_class = TeacherSerializer
@@ -90,13 +67,12 @@ class TutorsByAvgStudentAge(generics.ListAPIView):
 
 
 class CourseAttendees(generics.ListAPIView):
-
-
-# queryset = Course.objects.all().order_by('-student_count')
-# serializer_class = CourseStudentReportSerializer(queryset, many=True)
+    # queryset = Course.objects.all().order_by('-student_count')
+    # serializer_class = CourseStudentReportSerializer(queryset, many=True)
 
     queryset = Course.objects.annotate(num_attendees=models.Count('coursestudent__student')).order_by('-num_attendees')
-    serializer_class = CourseAttendeesSerializer#(queryset, many=True)
+    serializer_class = CourseAttendeesSerializer  # (queryset, many=True)
+
 
 class StudentAgeGreaterThan(generics.ListAPIView):
     serializer_class = StudentSerializer
@@ -106,24 +82,19 @@ class StudentAgeGreaterThan(generics.ListAPIView):
         queryset = Student.objects.filter(age__gt=age)
         return queryset
 
-class TeacherStudents(generics.ListCreateAPIView):
-    serializer_class = StudentTeacherSerializerList2
 
-    def get_queryset(self):
-        teacher_id = int(self.kwargs['teacher_id'])
-        return Teacher.objects.filter(id=teacher_id)
-    #queryset = Teacher.objects.all()
+class TeacherStudents(APIView):
+    serializer_class = TeacherSerializer
 
-    def perform_create(self, serializer):
-        teacher = self.get_queryset().first()
-        serializer.save(tutor=teacher)
+    def post(self, request, *args, **kwargs):
+        teacher_id = kwargs['teacher_id']
+        student_ids = request.data.get('student_ids', [])
+        teacher = Teacher.objects.get(pk=teacher_id)
+        students = Student.objects.filter(pk__in=student_ids)
 
-# queryset = Course.objects.annotate(student_count=models.Count('coursestudent')).order_by(
-#     '-student_count')
-# serializer_class = CourseReportSerializer
-# #ordering = ('-num_attendees',)
+        for student in students:
+            student.tutor = teacher
+            student.save()
 
-# queryset = Course.objects.annotate(
-#    nr_of_other_courses_attended_by_students=Count('coursestudent__student__courses', distinct=True) - 1).order_by('-nr_of_other_courses_attended_by_students')
-# serializer_class = CourseReportSerializer
-# ordering = ['-nr_of_other_courses_attended_by_students']
+        serializer = self.serializer_class(teacher)
+        return Response(serializer.data)
