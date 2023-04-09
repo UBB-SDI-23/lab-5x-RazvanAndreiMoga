@@ -3,18 +3,21 @@ from .views import *
 from django.urls import path, include
 from rest_framework import routers
 
+
 router = DefaultRouter()
 
 urlpatterns = [
-    path('teacher/<int:pk>/', TeacherDetail.as_view()),
-    path('student/<int:pk>/', StudentDetail.as_view()),
-    path('course/<int:pk>/', CourseDetail.as_view()),
+
+
+    path('teachers/<int:pk>/', TeacherDetail.as_view()),
+    path('students/<int:pk>/', StudentDetail.as_view()),
+    path('courses/<int:pk>/', CourseDetail.as_view()),
     path('course-student/<int:pk>/', CourseStudentDetail.as_view()),
-    path('student/age-gt/<int:age>/', StudentAgeGreaterThan.as_view(), name='student-age-gt'),
-    path('teacher/<int:teacher_id>/students/', TeacherStudents.as_view()),
-    path('student/', StudentList.as_view()),
-    path('teacher/', TeacherList.as_view()),
-    path('course/', CourseList.as_view()),
+    path('students/age-gt/<int:age>/', StudentAgeGreaterThan.as_view(), name='student-age-gt'),
+    path('teachers/<int:teacher_id>/students/', TeacherStudents.as_view()),
+    path('students/', StudentList.as_view()),
+    path('teachers/', TeacherList.as_view()),
+    path('courses/', CourseList.as_view()),
     path('course-student/', CourseStudentList.as_view()),
     # path('passing-students/', PassingStudentsCourse.as_view()),
     path('teachers-older-than/', TeachersOlderThan.as_view()),

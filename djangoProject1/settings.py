@@ -12,6 +12,32 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 
+import os
+# if os.name == 'nt':
+#     import platform
+#     OSGEO4W = r"C:\OSGeo4W"
+#     # if '64' in platform.architecture()[0]:
+#     #     OSGEO4W += "64"
+#     assert os.path.isdir(OSGEO4W), "Directory does not exist: " + OSGEO4W
+#     os.environ['OSGEO4W_ROOT'] = OSGEO4W
+#     os.environ['GDAL_DATA'] = OSGEO4W + r"\share\gdal"
+#     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
+#     os.environ['PATH'] = OSGEO4W + r"\bin;" + os.environ['PATH']
+# PATH
+# try:
+#     import gdal
+#     gdal_path = Path(gdal.__file__)
+#     OSGEO4W = os.path.join(gdal_path.parent, 'osgeo')
+#     os.environ["OSGEO4W_ROOT"] = OSGEO4W
+#     os.environ["GDAL_DATA"] = os.path.join(OSGEO4W, "data", "gdal")
+#     os.environ["PROJ_LIB"] = os.path.join(OSGEO4W, "data", "proj")
+#     os.environ["PATH"] = OSGEO4W + ";" + os.environ["PATH"]
+#     GEOS_LIBRARY_PATH = str(os.path.join(OSGEO4W, "geos_c.dll"))
+#     GDAL_LIBRARY_PATH = str(os.path.join(OSGEO4W, "gdal.dll"))
+# except ImportError:
+#     GEOS_LIBRARY_PATH = None
+#     GDAL_LIBRARY_PATH = None
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -39,6 +65,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'lab_1.apps.Lab1Config',
+    'drf_spectacular',
+    #'rest_framework_swagger',
+    #'drf_spectacular'
     'corsheaders'
 ]
 
@@ -135,3 +164,16 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'SDI API',
+    'DESCRIPTION': 'API for SDI',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
+# GDAL_LIBRARY_PATH = "C:\\OSGeo4W\\bin\\gdal306.dll"
