@@ -31,7 +31,6 @@ class Student(models.Model):
 class Course(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True, related_name='course_teacher_content')
     credits = models.IntegerField()
     exam_date = models.DateField()

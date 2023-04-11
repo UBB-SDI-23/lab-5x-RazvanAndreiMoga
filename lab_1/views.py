@@ -24,6 +24,11 @@ class TeacherList(generics.ListCreateAPIView):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializerList
 
+    def get(self, request, *args, **kwargs):
+        teachers = Teacher.objects.all()[:100]
+        serializer = TeacherSerializerList(teachers, many=True)
+        return Response(serializer.data)
+
 
 class TeacherDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Teacher.objects.all()
